@@ -139,6 +139,42 @@ class PokeAPI:
                 return None
         print("Nombre maximum de tentatives atteint.")
         return None
+    
+    # fonction pour simuler le combat
+    def simulate_battle(self, pokemon_1, pokemon_2):
+        """ Simuler un combat entre deux Pokémon sur 5 tours. """
+        stats_1 = self.fetch_pokemon_stats(pokemon_1)
+        stats_2 = self.fetch_pokemon_stats(pokemon_2)
+
+        if not stats_1 or not stats_2:
+            return None, None, "Erreur : l'un des Pokémon n'a pas pu être trouvé."
+
+        total_damage_1 = 0
+        total_damage_2 = 0
+
+        # Simulation sur 5 tours
+        for turn in range(5):
+            # Calcul des dégâts basés sur l'attaque et l'attaque spéciale du Pokémon et la défense et défense spéciale de l'adversaire
+            damage_1_physical = max(stats_1['attack'] - stats_2['defense'], 0)
+            damage_1_special = max(stats_1['special_attack'] - stats_2['special_defense'], 0)
+            damage_1 = damage_1_physical + damage_1_special
+
+            damage_2_physical = max(stats_2['attack'] - stats_1['defense'], 0)
+            damage_2_special = max(stats_2['special_attack'] - stats_1['special_defense'], 0)
+            damage_2 = damage_2_physical + damage_2_special
+
+            total_damage_1 += damage_1
+            total_damage_2 += damage_2
+
+        # Déterminer le gagnant
+        if total_damage_1 > total_damage_2:
+            winner = stats_1['name']
+        elif total_damage_2 > total_damage_1:
+            winner = stats_2['name']
+        else:
+            winner = "Match nul"
+
+        return stats_1, stats_2, winner, total_damage_1, total_damage_2
 
     async def fetch_all_data(self, urls):
         """ Fonction pour gérer des millions de requêtes de manière efficace. """

@@ -112,6 +112,34 @@ def simulate_requests():
                     st.write(f"**Réponse :** {response.get('name', 'Inconnu')}")
                 st.write("---")  # Ligne de séparation entre les résumés
 
+def simulate_battle():
+    st.header("Simuler un combat entre deux Pokémon")
+    pokemon_1 = st.text_input('Entre le nom ou l\'ID du premier Pokémon : ')
+    pokemon_2 = st.text_input('Entre le nom ou l\'ID du deuxième Pokémon : ')
+    if st.button("Lancer le combat"):
+        stats_pokemon_1, stats_pokemon_2, winner, total_damage_1, total_damage_2 = poke_api.simulate_battle(pokemon_1, pokemon_2)
+        if stats_pokemon_1 and stats_pokemon_2:
+            st.success(f"Combat entre {stats_pokemon_1['name']} et {stats_pokemon_2['name']}")
+            st.write(f"**{stats_pokemon_1['name']}**:")
+            st.write(f"Points de vie (HP): {stats_pokemon_1['hp']}")
+            st.write(f"Attaque: {stats_pokemon_1['attack']}")
+            st.write(f"Défense: {stats_pokemon_1['defense']}")
+            st.write(f"Attaque spéciale: {stats_pokemon_1['special_attack']}")
+            st.write(f"Défense spéciale: {stats_pokemon_1['special_defense']}")
+            st.write(f"Total des dégâts infligés sur 5 tours: {total_damage_1}")
+            st.write("---")
+            st.write(f"**{stats_pokemon_2['name']}**:")
+            st.write(f"Points de vie (HP): {stats_pokemon_2['hp']}")
+            st.write(f"Attaque: {stats_pokemon_2['attack']}")
+            st.write(f"Défense: {stats_pokemon_2['defense']}")
+            st.write(f"Attaque spéciale: {stats_pokemon_2['special_attack']}")
+            st.write(f"Défense spéciale: {stats_pokemon_2['special_defense']}")
+            st.write(f"Total des dégâts infligés sur 5 tours: {total_damage_2}")
+            st.write("---")
+            st.write(f"Le gagnant est : {winner}")
+        else:
+            st.error("Erreur : l'un des Pokémon n'a pas pu être trouvé.")
+
 # Fonction principale
 def main():
     st.title('PokéAPI - Informations sur vos Pokémon.')
@@ -121,7 +149,7 @@ def main():
         st.session_state.current_section = "home"
 
     # Sections cliquables à gauche
-    st.sidebar.header("Fonctionnalités")
+    st.sidebar.header("Sections")
     if st.sidebar.button("Obtenir les statistiques d'un Pokémon"):
         st.session_state.current_section = "pokemon_stats"
     if st.sidebar.button("Comparer deux Pokémon"):
@@ -130,6 +158,8 @@ def main():
         st.session_state.current_section = "type_stats"
     if st.sidebar.button("Simulation de requêtes vers l'API Pokémon"):
         st.session_state.current_section = "simulate_requests"
+    if st.sidebar.button("Simuler un combat entre deux Pokémon"):
+        st.session_state.current_section = "simulate_battle"
 
     # Affichage de la section sélectionnée
     if st.session_state.current_section == "pokemon_stats":
@@ -140,6 +170,8 @@ def main():
         display_type_stats()  # Appel de la fonction pour afficher les stats par type
     elif st.session_state.current_section == "simulate_requests":
         simulate_requests()
+    elif st.session_state.current_section == "simulate_battle":
+        simulate_battle()
     else:
         st.write("Sélectionnez une fonctionnalité dans le menu à gauche.")
 
